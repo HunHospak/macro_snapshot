@@ -1,0 +1,18 @@
+service: macro_snapshot
+schema_version: "1.0"
+ttl_hours: 30
+
+# FRED keyless CSV endpoint (no API key needed).
+fred_csv_url: "https://fred.stlouisfed.org/graph/fredgraph.csv?id={id}"
+
+# Indicators to publish. yoy: compute year-over-year % from a monthly index.
+# curve: mark as the yield-curve spread (drives the risk read).
+indicators:
+  - { id: DGS10,     label: "10Y Treasury",   unit: "%" }
+  - { id: DGS2,      label: "2Y Treasury",    unit: "%" }
+  - { id: T10Y2Y,    label: "10Y-2Y spread",  unit: "%", curve: true }
+  - { id: FEDFUNDS,  label: "Fed funds rate", unit: "%" }
+  - { id: UNRATE,    label: "Unemployment",   unit: "%" }
+  - { id: CPIAUCSL,  label: "CPI (YoY)",      unit: "%", yoy: true }
+
+feed_url: "https://HunHospak.github.io/macro_snapshot/macro_snapshot.json"
