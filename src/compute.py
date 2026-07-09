@@ -36,6 +36,18 @@ def build_board(series_map: Dict[str, List[Tuple[str, float]]], cfg: Dict[str, A
         if got:
             out.append(got)
 
+    # Embed a short recent series for indicators flagged chart:true (for a line chart).
+    n_points = int(cfg.get("chart_points", 90))
+    chart_series: Dict[str, Any] = {}
+    for ind in inds:
+        if ind.get("chart"):
+            s = series_map.get(ind["id"], [])
+            if s:
+                chart_series[ind["id"]] = {
+                    "label": ind.get("label", ind["id"]),
+                    "points": [[d, round(v, 3)] for d, v in s[-n_points:]],
+                }
+
     curve = next((i["value"] for i in out if i.get("curve")), None)
     if curve is None:
         regime = "unknown"
@@ -58,6 +70,7 @@ def build_board(series_map: Dict[str, List[Tuple[str, float]]], cfg: Dict[str, A
         "indicators": out,
         "yield_curve": curve,
         "regime": regime,
+        "chart_series": chart_series,
         "_status": status,
         "_notes": notes,
     }
