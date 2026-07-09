@@ -1,7 +1,7 @@
 {
   "service": "macro_snapshot",
   "schema_version": "1.0",
-  "generated_at": "2026-07-09T08:11:23+00:00",
+  "generated_at": "2026-07-09T11:05:35+00:00",
   "status": "unavailable",
   "ttl_hours": 30,
   "data": {
@@ -9,6 +9,7 @@
     "indicators": [],
     "yield_curve": null,
     "regime": "unknown",
+    "chart_series": {},
     "disclaimer": "Macro indicators from FRED. Informational only, not investment advice."
   },
   "notes": "No FRED series available."
