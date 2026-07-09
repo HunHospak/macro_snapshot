@@ -5,7 +5,11 @@ from typing import Any, Dict, List, Tuple
 
 import requests
 
-_HEADERS = {"User-Agent": "arkenlabs-macro-snapshot/1.0"}
+_HEADERS = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                  "(KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+    "Accept": "text/csv,text/plain,*/*",
+}
 
 
 def parse_fred_csv(text: str) -> List[Tuple[str, float]]:
