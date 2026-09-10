@@ -1,11 +1,11 @@
 {
   "service": "macro_snapshot",
   "schema_version": "1.0",
-  "generated_at": "2026-09-09T00:06:06+00:00",
+  "generated_at": "2026-09-10T00:06:54+00:00",
   "status": "unavailable",
   "ttl_hours": 30,
   "data": {
-    "as_of": "2026-09-09",
+    "as_of": "2026-09-10",
     "indicators": [],
     "yield_curve": null,
     "regime": "unknown",
