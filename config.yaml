@@ -2,8 +2,16 @@ service: macro_snapshot
 schema_version: "1.0"
 ttl_hours: 30
 
-# FRED keyless CSV endpoint (no API key needed).
-fred_csv_url: "https://fred.stlouisfed.org/graph/fredgraph.csv?id={id}"
+# Official keyless observation tables. CSV downloads currently stall upstream;
+# use the same measured FRED observations, not a proxy or a manufactured value.
+fred_data_url: "https://fred.stlouisfed.org/data/{id}"
+
+# CSV remains supported for explicitly configured legacy deployments.
+# Bound the download: two years covers YoY and 90-point charts without fetching
+# decades of daily history (which caused silent read timeouts).
+fred_csv_url: "https://fred.stlouisfed.org/graph/fredgraph.csv?id={id}&cosd={start}&coed={end}"
+fred_lookback_days: 730
+fred_timeout_seconds: 35
 
 # Indicators to publish. yoy: compute year-over-year % from a monthly index.
 # curve: mark as the yield-curve spread (drives the risk read).

@@ -1,4 +1,5 @@
 """Pure computation for macro_snapshot. No I/O, unit-testable."""
+
 from __future__ import annotations
 
 from typing import Any, Dict, List, Tuple
@@ -23,8 +24,13 @@ def _indicator(series: List[Tuple[str, float]], ind: Dict[str, Any]) -> Dict[str
         value = round(val, 2)
         change = round(val - series[-2][1], 2) if len(series) >= 2 else None
     return {
-        "id": ind["id"], "label": ind["label"], "unit": ind.get("unit", ""),
-        "value": value, "change": change, "as_of": date, "curve": bool(ind.get("curve")),
+        "id": ind["id"],
+        "label": ind["label"],
+        "unit": ind.get("unit", ""),
+        "value": value,
+        "change": change,
+        "as_of": date,
+        "curve": bool(ind.get("curve")),
     }
 
 
@@ -60,8 +66,9 @@ def build_board(series_map: Dict[str, List[Tuple[str, float]]], cfg: Dict[str, A
 
     if not out:
         status, notes = "unavailable", "No FRED series available."
-    elif len(out) < max(1, len(inds) // 2):
-        status, notes = "partial", "Some FRED series unavailable."
+    elif len(out) < len(inds):
+        missing = sorted({i["id"] for i in inds} - {i["id"] for i in out})
+        status, notes = "partial", "FRED series unavailable: " + ", ".join(missing)
     else:
         status, notes = "active", None
 

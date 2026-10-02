@@ -1,4 +1,5 @@
 """Orchestration: ingest -> compute -> validate(schema) -> write out/."""
+
 from __future__ import annotations
 
 import datetime as dt
@@ -12,8 +13,8 @@ import yaml
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
-from providers import gather  # noqa: E402
-from compute import build_board  # noqa: E402
+from providers import gather
+from compute import build_board
 
 
 def load_config() -> dict:
@@ -26,7 +27,9 @@ def load_schema() -> dict:
 
 def build(cfg: dict) -> dict:
     raw = gather(cfg)
-    board = build_board(raw.get("series", {}), cfg, dt.date.today().isoformat())
+    board = build_board(raw.get("series", {}), cfg, dt.datetime.now(dt.timezone.utc).date().isoformat())
+    board["source_urls"] = raw.get("source_urls", {})
+    board["source_type"] = "measured"
     status = board.pop("_status")
     notes = board.pop("_notes", None)
     board["disclaimer"] = "Macro indicators from FRED. Informational only, not investment advice."
@@ -50,10 +53,12 @@ def main() -> None:
     jsonschema.validate(feed, load_schema())
     out = ROOT / "out"
     (out / "history").mkdir(parents=True, exist_ok=True)
-    payload = json.dumps(feed, indent=2)
+    payload = json.dumps(feed, indent=2, allow_nan=False)
     (out / "macro_snapshot.json").write_text(payload, encoding="utf-8")
     (out / "history" / f"{feed['data']['as_of']}.json").write_text(payload, encoding="utf-8")
-    print(f"[macro_snapshot] status={feed['status']} indicators={len(feed['data']['indicators'])} regime={feed['data']['regime']}")
+    print(
+        f"[macro_snapshot] status={feed['status']} indicators={len(feed['data']['indicators'])} regime={feed['data']['regime']}"
+    )
 
 
 if __name__ == "__main__":
