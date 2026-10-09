@@ -1,37 +1,37 @@
 {
   "service": "macro_snapshot",
   "schema_version": "1.0",
-  "generated_at": "2026-10-08T01:48:45+00:00",
+  "generated_at": "2026-10-09T02:01:04+00:00",
   "status": "active",
   "ttl_hours": 30,
   "data": {
-    "as_of": "2026-10-08",
+    "as_of": "2026-10-09",
     "indicators": [
       {
         "id": "DGS10",
         "label": "10Y Treasury",
         "unit": "%",
-        "value": 5.27,
-        "change": -0.04,
-        "as_of": "2026-10-06",
+        "value": 5.28,
+        "change": 0.01,
+        "as_of": "2026-10-07",
         "curve": false
       },
       {
         "id": "DGS2",
         "label": "2Y Treasury",
         "unit": "%",
-        "value": 4.79,
-        "change": -0.05,
-        "as_of": "2026-10-06",
+        "value": 4.77,
+        "change": -0.02,
+        "as_of": "2026-10-07",
         "curve": false
       },
       {
         "id": "T10Y2Y",
         "label": "10Y-2Y spread",
         "unit": "%",
-        "value": 0.51,
-        "change": 0.03,
-        "as_of": "2026-10-07",
+        "value": 0.47,
+        "change": -0.04,
+        "as_of": "2026-10-08",
         "curve": true
       },
       {
@@ -62,16 +62,12 @@
         "curve": false
       }
     ],
-    "yield_curve": 0.51,
-    "regime": "normal-curve",
+    "yield_curve": 0.47,
+    "regime": "flat-curve",
     "chart_series": {
       "DGS10": {
         "label": "10Y Treasury",
         "points": [
-          [
-            "2026-05-29",
-            4.45
-          ],
           [
             "2026-06-01",
             4.47
@@ -427,16 +423,16 @@
           [
             "2026-10-06",
             5.27
+          ],
+          [
+            "2026-10-07",
+            5.28
           ]
         ]
       },
       "T10Y2Y": {
         "label": "10Y-2Y spread",
         "points": [
-          [
-            "2026-06-01",
-            0.42
-          ],
           [
             "2026-06-02",
             0.41
@@ -792,6 +788,10 @@
           [
             "2026-10-07",
             0.51
+          ],
+          [
+            "2026-10-08",
+            0.47
           ]
         ]
       }
