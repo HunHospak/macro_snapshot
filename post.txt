@@ -1,8 +1,8 @@
-Macro snapshot — 2026-10-14 (flat-curve)
-  10Y Treasury: 5.24% (+0.02)
-  2Y Treasury: 4.8% (+0.05)
-  10Y-2Y spread: 0.42% (-0.02)
+Macro snapshot — 2026-10-15 (flat-curve)
+  10Y Treasury: 5.21% (-0.03)
+  2Y Treasury: 4.79% (-0.01)
+  10Y-2Y spread: 0.37% (-0.05)
   Fed funds rate: 3.75% (+0.12)
   Unemployment: 4.2% (+0.1)
-  CPI (YoY): 3.7% (+0.2)
+  CPI (YoY): 4.0% (+0.3)
 FRED data · not investment advice · arkenlabs.eu
