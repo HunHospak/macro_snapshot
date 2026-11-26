@@ -42,6 +42,30 @@ class RecoveryTests(unittest.TestCase):
         self.assertEqual(result["_status"], "partial")
         self.assertIn("B", result["_notes"])
 
+    def test_cpi_uses_the_same_month_last_year_despite_missing_months(self):
+        cfg = {"indicators": [{"id": "CPI", "label": "CPI", "yoy": True}]}
+        observations = [
+            ("2025-10-01", 100.0), ("2025-11-01", 105.0), ("2026-11-03", 115.5),
+        ]
+        board = build_board({"CPI": observations}, cfg, "2026-11-26")
+        cpi = board["indicators"][0]
+        self.assertEqual(cpi["value"], 10.0)
+        self.assertEqual(cpi["as_of"], "2026-11-03")
+        self.assertIsNone(cpi["change"])
+
+        observations.insert(2, ("2026-10-01", 104.0))
+        board = build_board({"CPI": observations}, cfg, "2026-11-26")
+        self.assertEqual(board["indicators"][0]["change"], 6.0)
+
+    def test_cpi_missing_annual_base_never_uses_thirteenth_observation(self):
+        cfg = {"indicators": [{"id": "CPI", "label": "CPI", "yoy": True}]}
+        observations = [(f"2025-{m:02d}-01", 100.0) for m in range(1, 11)]
+        observations += [("2025-12-01", 103.0), ("2026-10-01", 108.0), ("2026-11-01", 110.0)]
+        board = build_board({"CPI": observations}, cfg, "2026-11-26")
+        self.assertEqual(board["_status"], "unavailable")
+        self.assertEqual(board["indicators"], [])
+        self.assertIn("No usable same-month prior-year observation for CPI (2026-11)", board["_notes"])
+
     def test_official_table_parser_uses_only_explicit_finite_observations(self):
         text = (
             '<table><tr><th scope="row">2026-09-30</th><td>4.5</td></tr>'

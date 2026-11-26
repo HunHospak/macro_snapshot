@@ -2,7 +2,13 @@
 
 from __future__ import annotations
 
+from datetime import date as calendar_date
 from typing import Any, Dict, List, Tuple
+
+
+def _month_number(observed: str) -> int:
+    day = calendar_date.fromisoformat(observed)
+    return day.year * 12 + day.month
 
 
 def _indicator(series: List[Tuple[str, float]], ind: Dict[str, Any]) -> Dict[str, Any] | None:
@@ -10,15 +16,16 @@ def _indicator(series: List[Tuple[str, float]], ind: Dict[str, Any]) -> Dict[str
         return None
     date, val = series[-1]
     if ind.get("yoy"):
-        # monthly index -> YoY %. Compare to ~12 observations earlier.
-        if len(series) < 13:
-            return None
-        year_ago = series[-13][1]
-        if year_ago == 0:
+        # A missing release does not move the annual comparison to another month.
+        by_month = {_month_number(observed): price for observed, price in series}
+        month = _month_number(date)
+        year_ago = by_month.get(month - 12)
+        if not year_ago:
             return None
         value = round((val / year_ago - 1) * 100, 1)
-        prev = series[-14][1] if len(series) >= 14 else None
-        prev_yoy = round((series[-2][1] / prev - 1) * 100, 1) if prev else None
+        prev_value = by_month.get(month - 1)
+        prev_base = by_month.get(month - 13)
+        prev_yoy = round((prev_value / prev_base - 1) * 100, 1) if prev_value is not None and prev_base else None
         change = round(value - prev_yoy, 1) if prev_yoy is not None else None
     else:
         value = round(val, 2)
@@ -37,10 +44,17 @@ def _indicator(series: List[Tuple[str, float]], ind: Dict[str, Any]) -> Dict[str
 def build_board(series_map: Dict[str, List[Tuple[str, float]]], cfg: Dict[str, Any], as_of: str) -> Dict[str, Any]:
     inds = cfg.get("indicators", [])
     out: List[Dict[str, Any]] = []
+    missing = []
+    missing_yoy_base = []
     for ind in inds:
-        got = _indicator(series_map.get(ind["id"], []), ind)
+        series = series_map.get(ind["id"], [])
+        got = _indicator(series, ind)
         if got:
             out.append(got)
+        elif series and ind.get("yoy"):
+            missing_yoy_base.append(f'{ind["id"]} ({series[-1][0][:7]})')
+        else:
+            missing.append(ind["id"])
 
     # Embed a short recent series for indicators flagged chart:true (for a line chart).
     n_points = int(cfg.get("chart_points", 90))
@@ -64,13 +78,13 @@ def build_board(series_map: Dict[str, List[Tuple[str, float]]], cfg: Dict[str, A
     else:
         regime = "normal-curve"
 
-    if not out:
-        status, notes = "unavailable", "No FRED series available."
-    elif len(out) < len(inds):
-        missing = sorted({i["id"] for i in inds} - {i["id"] for i in out})
-        status, notes = "partial", "FRED series unavailable: " + ", ".join(missing)
-    else:
-        status, notes = "active", None
+    limitations = []
+    if missing:
+        limitations.append("FRED series unavailable: " + ", ".join(sorted(missing)) + ".")
+    if missing_yoy_base:
+        limitations.append("No usable same-month prior-year observation for " + ", ".join(missing_yoy_base) + ".")
+    status = "unavailable" if not out else "partial" if limitations else "active"
+    notes = " ".join(limitations) or ("No FRED series available." if not out else None)
 
     return {
         "as_of": as_of,
