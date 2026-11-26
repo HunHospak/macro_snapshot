@@ -4,5 +4,4 @@ Macro snapshot — 2026-11-26 (flat-curve)
   10Y-2Y spread: 0.24% (-0.04)
   Fed funds rate: 3.88% (+0.13)
   Unemployment: 4.1% (-0.1)
-  CPI (YoY): 4.1% (+0.1)
 FRED data · not investment advice · arkenlabs.eu
