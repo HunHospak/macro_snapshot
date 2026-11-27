@@ -1,4 +1,4 @@
-Macro snapshot — 2026-11-26 (flat-curve)
+Macro snapshot — 2026-11-27 (flat-curve)
   10Y Treasury: 4.91% (-0.01)
   2Y Treasury: 4.63% (+0.0)
   10Y-2Y spread: 0.24% (-0.04)
